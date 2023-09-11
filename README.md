@@ -22,3 +22,18 @@
 #creo el contenedor del proxy y apunto a mi archivo de configuracion ademas de contectarlo a la red
 - docker run -d --name haproxy-container --network red-balanceador -p 8085:80 -v ${PWD}/config/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg haproxy:latest
 
+
+# CON DOCKERFILE
+
+## Construir la imagen
+docker build -t app .
+
+## Inspeccionar la red
+docker network inspect red-balanceador
+
+## Concetar contenedor mysql a la red
+- docker network connect red-balanceador mysql
+
+## Crear los contenedores a partir de la imagen creada
+docker run -d --name web1 --network red-balanceador -e CUSTOM_MESSAGE=Web1 -p 8080:80 app
+docker run -d --name web2 --network red-balanceador -e CUSTOM_MESSAGE=Web2 -p 8081:80 app
